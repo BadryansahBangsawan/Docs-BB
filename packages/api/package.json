@@ -1,0 +1,25 @@
+{
+  "name": "@docs-badry/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@docs-badry/db": "workspace:*",
+    "@docs-badry/env": "workspace:*",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@docs-badry/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
