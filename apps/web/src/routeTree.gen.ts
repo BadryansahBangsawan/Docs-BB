@@ -9,13 +9,61 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsefulLinkRouteImport } from './routes/useful-link'
+import { Route as ProjectRouteImport } from './routes/project'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as AiLlmRouteImport } from './routes/ai-llm'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UsefulLinkSplatRouteImport } from './routes/useful-link/$'
+import { Route as ProjectSplatRouteImport } from './routes/project/$'
+import { Route as PortfolioSplatRouteImport } from './routes/portfolio/$'
+import { Route as AiLlmSplatRouteImport } from './routes/ai-llm/$'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 
+const UsefulLinkRoute = UsefulLinkRouteImport.update({
+  id: '/useful-link',
+  path: '/useful-link',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectRoute = ProjectRouteImport.update({
+  id: '/project',
+  path: '/project',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiLlmRoute = AiLlmRouteImport.update({
+  id: '/ai-llm',
+  path: '/ai-llm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const UsefulLinkSplatRoute = UsefulLinkSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => UsefulLinkRoute,
+} as any)
+const ProjectSplatRoute = ProjectSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => ProjectRoute,
+} as any)
+const PortfolioSplatRoute = PortfolioSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => PortfolioRoute,
+} as any)
+const AiLlmSplatRoute = AiLlmSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => AiLlmRoute,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
@@ -25,38 +73,153 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-llm': typeof AiLlmRouteWithChildren
+  '/portfolio': typeof PortfolioRouteWithChildren
+  '/project': typeof ProjectRouteWithChildren
+  '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/ai-llm/$': typeof AiLlmSplatRoute
+  '/portfolio/$': typeof PortfolioSplatRoute
+  '/project/$': typeof ProjectSplatRoute
+  '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-llm': typeof AiLlmRouteWithChildren
+  '/portfolio': typeof PortfolioRouteWithChildren
+  '/project': typeof ProjectRouteWithChildren
+  '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/ai-llm/$': typeof AiLlmSplatRoute
+  '/portfolio/$': typeof PortfolioSplatRoute
+  '/project/$': typeof ProjectSplatRoute
+  '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-llm': typeof AiLlmRouteWithChildren
+  '/portfolio': typeof PortfolioRouteWithChildren
+  '/project': typeof ProjectRouteWithChildren
+  '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/ai-llm/$': typeof AiLlmSplatRoute
+  '/portfolio/$': typeof PortfolioSplatRoute
+  '/project/$': typeof ProjectSplatRoute
+  '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/trpc/$'
+  fullPaths:
+    | '/'
+    | '/ai-llm'
+    | '/portfolio'
+    | '/project'
+    | '/useful-link'
+    | '/ai-llm/$'
+    | '/portfolio/$'
+    | '/project/$'
+    | '/useful-link/$'
+    | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/trpc/$'
-  id: '__root__' | '/' | '/api/trpc/$'
+  to:
+    | '/'
+    | '/ai-llm'
+    | '/portfolio'
+    | '/project'
+    | '/useful-link'
+    | '/ai-llm/$'
+    | '/portfolio/$'
+    | '/project/$'
+    | '/useful-link/$'
+    | '/api/trpc/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/ai-llm'
+    | '/portfolio'
+    | '/project'
+    | '/useful-link'
+    | '/ai-llm/$'
+    | '/portfolio/$'
+    | '/project/$'
+    | '/useful-link/$'
+    | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiLlmRoute: typeof AiLlmRouteWithChildren
+  PortfolioRoute: typeof PortfolioRouteWithChildren
+  ProjectRoute: typeof ProjectRouteWithChildren
+  UsefulLinkRoute: typeof UsefulLinkRouteWithChildren
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/useful-link': {
+      id: '/useful-link'
+      path: '/useful-link'
+      fullPath: '/useful-link'
+      preLoaderRoute: typeof UsefulLinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project': {
+      id: '/project'
+      path: '/project'
+      fullPath: '/project'
+      preLoaderRoute: typeof ProjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-llm': {
+      id: '/ai-llm'
+      path: '/ai-llm'
+      fullPath: '/ai-llm'
+      preLoaderRoute: typeof AiLlmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/useful-link/$': {
+      id: '/useful-link/$'
+      path: '/$'
+      fullPath: '/useful-link/$'
+      preLoaderRoute: typeof UsefulLinkSplatRouteImport
+      parentRoute: typeof UsefulLinkRoute
+    }
+    '/project/$': {
+      id: '/project/$'
+      path: '/$'
+      fullPath: '/project/$'
+      preLoaderRoute: typeof ProjectSplatRouteImport
+      parentRoute: typeof ProjectRoute
+    }
+    '/portfolio/$': {
+      id: '/portfolio/$'
+      path: '/$'
+      fullPath: '/portfolio/$'
+      preLoaderRoute: typeof PortfolioSplatRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
+    '/ai-llm/$': {
+      id: '/ai-llm/$'
+      path: '/$'
+      fullPath: '/ai-llm/$'
+      preLoaderRoute: typeof AiLlmSplatRouteImport
+      parentRoute: typeof AiLlmRoute
     }
     '/api/trpc/$': {
       id: '/api/trpc/$'
@@ -68,8 +231,57 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AiLlmRouteChildren {
+  AiLlmSplatRoute: typeof AiLlmSplatRoute
+}
+
+const AiLlmRouteChildren: AiLlmRouteChildren = {
+  AiLlmSplatRoute: AiLlmSplatRoute,
+}
+
+const AiLlmRouteWithChildren = AiLlmRoute._addFileChildren(AiLlmRouteChildren)
+
+interface PortfolioRouteChildren {
+  PortfolioSplatRoute: typeof PortfolioSplatRoute
+}
+
+const PortfolioRouteChildren: PortfolioRouteChildren = {
+  PortfolioSplatRoute: PortfolioSplatRoute,
+}
+
+const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
+  PortfolioRouteChildren,
+)
+
+interface ProjectRouteChildren {
+  ProjectSplatRoute: typeof ProjectSplatRoute
+}
+
+const ProjectRouteChildren: ProjectRouteChildren = {
+  ProjectSplatRoute: ProjectSplatRoute,
+}
+
+const ProjectRouteWithChildren =
+  ProjectRoute._addFileChildren(ProjectRouteChildren)
+
+interface UsefulLinkRouteChildren {
+  UsefulLinkSplatRoute: typeof UsefulLinkSplatRoute
+}
+
+const UsefulLinkRouteChildren: UsefulLinkRouteChildren = {
+  UsefulLinkSplatRoute: UsefulLinkSplatRoute,
+}
+
+const UsefulLinkRouteWithChildren = UsefulLinkRoute._addFileChildren(
+  UsefulLinkRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiLlmRoute: AiLlmRouteWithChildren,
+  PortfolioRoute: PortfolioRouteWithChildren,
+  ProjectRoute: ProjectRouteWithChildren,
+  UsefulLinkRoute: UsefulLinkRouteWithChildren,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,3 +1,3 @@
 {
-  "extends": "@docs-badry/config/tsconfig.base.json"
+	"extends": "@docs-badry/config/tsconfig.base.json"
 }
