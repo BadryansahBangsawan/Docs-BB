@@ -12,12 +12,26 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 
 import { AppShell } from "../components/app-shell";
+import { profile } from "../content/profile";
 
 import appCss from "../index.css?url";
 export interface RouterAppContext {
 	trpc: TRPCOptionsProxy<AppRouter>;
 	queryClient: QueryClient;
 }
+
+const themeScript = `
+(() => {
+  try {
+    const theme = window.localStorage.getItem("docs-badry-theme") === "dark" ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.style.colorScheme = theme;
+  } catch {
+    document.documentElement.classList.remove("dark");
+    document.documentElement.style.colorScheme = "light";
+  }
+})();
+`;
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
 	head: () => ({
@@ -30,18 +44,54 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Badry Docs",
+				title: `${profile.name} | Personal Docs`,
 			},
 			{
 				name: "description",
+				content: profile.description,
+			},
+			{
+				name: "author",
+				content: profile.name,
+			},
+			{
+				name: "keywords",
 				content:
-					"Personal documentation, project notes, case studies, and useful engineering references.",
+					"badryansah, badryansah bangsawan, portfolio frontend developer, software engineer makassar",
+			},
+			{
+				property: "og:title",
+				content: `${profile.name} | Personal Website`,
+			},
+			{
+				property: "og:description",
+				content: profile.description,
+			},
+			{
+				property: "og:image",
+				content: "/avatar.jpg",
+			},
+			{
+				name: "twitter:card",
+				content: "summary_large_image",
 			},
 		],
 		links: [
 			{
 				rel: "stylesheet",
 				href: appCss,
+			},
+			{
+				rel: "shortcut icon",
+				href: "/logo.png",
+			},
+			{
+				rel: "icon",
+				href: "/logo.png",
+			},
+			{
+				rel: "apple-touch-icon",
+				href: "/logo.png",
 			},
 		],
 	}),
@@ -51,8 +101,12 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
 	return (
-		<html lang="id" className="dark" suppressHydrationWarning>
+		<html lang="id" suppressHydrationWarning>
 			<head>
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: Theme must be applied before CSS paints to avoid dark/light flash.
+					dangerouslySetInnerHTML={{ __html: themeScript }}
+				/>
 				<HeadContent />
 			</head>
 			<body>

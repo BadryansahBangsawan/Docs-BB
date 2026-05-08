@@ -2,8 +2,8 @@ import { Button } from "@docs-badry/ui/components/button";
 import { cn } from "@docs-badry/ui/lib/utils";
 import { useLocation } from "@tanstack/react-router";
 import {
-	BookOpen,
 	Briefcase,
+	ChevronDown,
 	FileText,
 	Folder,
 	Home,
@@ -13,9 +13,18 @@ import {
 	Sparkles,
 	X,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import {
+	type Dispatch,
+	type ReactNode,
+	type SetStateAction,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 
-import { navSections, searchDocs } from "@/content/docs";
+import { type NavSection, navSections, searchDocs } from "@/content/docs";
+import { profile } from "@/content/profile";
 
 import Header from "./header";
 
@@ -32,22 +41,81 @@ const sectionIcons = {
 	"useful-link": LinkIcon,
 };
 
+const themeStorageKey = "docs-badry-theme";
+
+type NavItem = NavSection["items"][number];
+type NavTreeNode = NavItem & {
+	children: NavTreeNode[];
+};
+
+function getCurrentTheme(): ThemeMode {
+	if (typeof document === "undefined") {
+		return "light";
+	}
+
+	return document.documentElement.classList.contains("dark") ? "dark" : "light";
+}
+
+function applyTheme(theme: ThemeMode) {
+	document.documentElement.classList.toggle("dark", theme === "dark");
+	document.documentElement.style.colorScheme = theme;
+	window.localStorage.setItem(themeStorageKey, theme);
+}
+
+function buildNavTree(items: NavItem[]) {
+	const nodeMap = new Map<string, NavTreeNode>();
+	const roots: NavTreeNode[] = [];
+
+	for (const item of items) {
+		nodeMap.set(item.slug, { ...item, children: [] });
+	}
+
+	for (const item of items) {
+		const node = nodeMap.get(item.slug);
+		const parentSlug = item.segments.slice(0, -1).join("/");
+		const parent = nodeMap.get(parentSlug);
+
+		if (!node) {
+			continue;
+		}
+
+		if (parent) {
+			parent.children.push(node);
+		} else {
+			roots.push(node);
+		}
+	}
+
+	return roots;
+}
+
+function getActiveParentGroups(pathname: string) {
+	const activeSection = navSections.find(
+		(section) =>
+			pathname === section.href || pathname.startsWith(`${section.href}/`),
+	);
+	const activeItem = activeSection?.items.find(
+		(item) => pathname === item.href,
+	);
+
+	if (!activeSection || !activeItem) {
+		return [];
+	}
+
+	return activeItem.segments
+		.slice(0, -1)
+		.map((_, index, segments) => segments.slice(0, index + 1).join("/"))
+		.filter((slug) => slug !== activeSection.slug);
+}
+
 export function AppShell({ children }: AppShellProps) {
 	const [searchOpen, setSearchOpen] = useState(false);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [theme, setTheme] = useState<ThemeMode>("dark");
+	const [theme, setTheme] = useState<ThemeMode>("light");
 
 	useEffect(() => {
-		const savedTheme = window.localStorage.getItem(
-			"docs-badry-theme",
-		) as ThemeMode | null;
-		setTheme(savedTheme === "light" ? "light" : "dark");
+		setTheme(getCurrentTheme());
 	}, []);
-
-	useEffect(() => {
-		document.documentElement.classList.toggle("dark", theme === "dark");
-		window.localStorage.setItem("docs-badry-theme", theme);
-	}, [theme]);
 
 	useEffect(() => {
 		function onKeyDown(event: KeyboardEvent) {
@@ -70,10 +138,11 @@ export function AppShell({ children }: AppShellProps) {
 			<Header
 				onOpenSearch={() => setSearchOpen(true)}
 				onToggleSidebar={() => setSidebarOpen((value) => !value)}
-				onToggleTheme={() =>
-					setTheme((value) => (value === "dark" ? "light" : "dark"))
-				}
-				theme={theme}
+				onToggleTheme={() => {
+					const nextTheme = theme === "dark" ? "light" : "dark";
+					applyTheme(nextTheme);
+					setTheme(nextTheme);
+				}}
 			/>
 			<div className="mx-auto flex w-full max-w-[1480px]">
 				<Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -94,6 +163,52 @@ function Sidebar({
 	onClose: () => void;
 }) {
 	const pathname = useLocation({ select: (location) => location.pathname });
+	const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+		() =>
+			Object.fromEntries(
+				navSections.map((section) => [
+					section.slug,
+					pathname === section.href || pathname.startsWith(`${section.href}/`),
+				]),
+			),
+	);
+	const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+		Object.fromEntries(
+			getActiveParentGroups(pathname).map((slug) => [slug, true]),
+		),
+	);
+
+	useEffect(() => {
+		const activeSection = navSections.find(
+			(section) =>
+				pathname === section.href || pathname.startsWith(`${section.href}/`),
+		);
+
+		if (!activeSection) {
+			return;
+		}
+
+		setOpenSections((value) => ({ ...value, [activeSection.slug]: true }));
+
+		const activeItem = activeSection.items.find(
+			(item) => pathname === item.href,
+		);
+		if (!activeItem) {
+			return;
+		}
+
+		const parentSlugs = activeItem.segments
+			.slice(0, -1)
+			.map((_, index, segments) => segments.slice(0, index + 1).join("/"))
+			.filter((slug) => slug !== activeSection.slug);
+
+		if (parentSlugs.length > 0) {
+			setOpenGroups((value) => ({
+				...value,
+				...Object.fromEntries(parentSlugs.map((slug) => [slug, true])),
+			}));
+		}
+	}, [pathname]);
 
 	return (
 		<>
@@ -117,8 +232,12 @@ function Sidebar({
 						className="inline-flex items-center gap-2 font-semibold text-sm"
 						href="/"
 					>
-						<BookOpen className="size-4" />
-						Badry Docs
+						<img
+							alt={`${profile.shortName} logo`}
+							className="size-5 rounded-full bg-white object-cover"
+							src="/logo.png"
+						/>
+						{profile.shortName} Docs
 					</a>
 					<Button
 						aria-label="Close navigation"
@@ -152,44 +271,61 @@ function Sidebar({
 							const isSectionActive =
 								pathname === section.href ||
 								pathname.startsWith(`${section.href}/`);
+							const isOpen = openSections[section.slug] ?? false;
+							const tree = buildNavTree(section.items);
 
 							return (
 								<section key={section.slug} className="space-y-2">
-									<a
+									<div
 										className={cn(
-											"flex items-center gap-2 rounded-md px-3 py-2 font-semibold text-sm transition-colors",
+											"flex items-center rounded-md transition-colors",
 											isSectionActive
-												? "text-foreground"
+												? "bg-muted text-foreground"
 												: "text-muted-foreground hover:bg-muted hover:text-foreground",
 										)}
-										href={section.href}
-										onClick={onClose}
 									>
-										<SectionIcon className="size-4" />
-										{section.title}
-									</a>
-									<div className="space-y-1">
-										{section.items.map((item) => {
-											const isActive = pathname === item.href;
-											return (
-												<a
-													className={cn(
-														"flex min-h-8 items-center gap-2 rounded-md py-1.5 pr-2 text-sm transition-colors",
-														isActive
-															? "bg-muted text-foreground"
-															: "text-muted-foreground hover:bg-muted hover:text-foreground",
-													)}
-													href={item.href}
-													key={item.slug}
-													onClick={onClose}
-													style={{ paddingLeft: `${12 + item.depth * 14}px` }}
-												>
-													<FileText className="size-3.5 shrink-0" />
-													<span className="min-w-0 truncate">{item.title}</span>
-												</a>
-											);
-										})}
+										<a
+											className="flex min-h-9 min-w-0 flex-1 items-center gap-2 px-3 font-semibold text-sm"
+											href={section.href}
+											onClick={onClose}
+										>
+											<SectionIcon className="size-4 shrink-0" />
+											<span className="min-w-0 truncate">{section.title}</span>
+										</a>
+										<button
+											aria-expanded={isOpen}
+											aria-label={`${isOpen ? "Collapse" : "Expand"} ${section.title}`}
+											className="flex size-9 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-background/80"
+											onClick={() =>
+												setOpenSections((value) => ({
+													...value,
+													[section.slug]: !isOpen,
+												}))
+											}
+											type="button"
+										>
+											<ChevronDown
+												className={cn(
+													"size-4 transition-transform",
+													isOpen ? "rotate-0" : "-rotate-90",
+												)}
+											/>
+										</button>
 									</div>
+									{isOpen ? (
+										<div className="space-y-1">
+											{tree.map((item) => (
+												<SidebarTreeItem
+													item={item}
+													key={item.slug}
+													onClose={onClose}
+													openGroups={openGroups}
+													pathname={pathname}
+													setOpenGroups={setOpenGroups}
+												/>
+											))}
+										</div>
+									) : null}
 								</section>
 							);
 						})}
@@ -197,6 +333,83 @@ function Sidebar({
 				</nav>
 			</aside>
 		</>
+	);
+}
+
+function SidebarTreeItem({
+	item,
+	onClose,
+	openGroups,
+	pathname,
+	setOpenGroups,
+}: {
+	item: NavTreeNode;
+	onClose: () => void;
+	openGroups: Record<string, boolean>;
+	pathname: string;
+	setOpenGroups: Dispatch<SetStateAction<Record<string, boolean>>>;
+}) {
+	const isActive = pathname === item.href;
+	const hasChildren = item.children.length > 0;
+	const isOpen = openGroups[item.slug] ?? false;
+	const paddingLeft = 12 + item.depth * 14;
+
+	return (
+		<div>
+			<div
+				className={cn(
+					"flex items-center rounded-md transition-colors",
+					isActive
+						? "bg-muted text-foreground"
+						: "text-muted-foreground hover:bg-muted hover:text-foreground",
+				)}
+			>
+				<a
+					className="flex min-h-8 min-w-0 flex-1 items-center gap-2 py-1.5 pr-2 text-sm"
+					href={item.href}
+					onClick={onClose}
+					style={{ paddingLeft }}
+				>
+					<FileText className="size-3.5 shrink-0" />
+					<span className="min-w-0 truncate">{item.title}</span>
+				</a>
+				{hasChildren ? (
+					<button
+						aria-expanded={isOpen}
+						aria-label={`${isOpen ? "Collapse" : "Expand"} ${item.title}`}
+						className="flex size-8 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-background/80"
+						onClick={() =>
+							setOpenGroups((value) => ({
+								...value,
+								[item.slug]: !isOpen,
+							}))
+						}
+						type="button"
+					>
+						<ChevronDown
+							className={cn(
+								"size-3.5 transition-transform",
+								isOpen ? "rotate-0" : "-rotate-90",
+							)}
+						/>
+					</button>
+				) : null}
+			</div>
+			{hasChildren && isOpen ? (
+				<div className="mt-1 space-y-1">
+					{item.children.map((child) => (
+						<SidebarTreeItem
+							item={child}
+							key={child.slug}
+							onClose={onClose}
+							openGroups={openGroups}
+							pathname={pathname}
+							setOpenGroups={setOpenGroups}
+						/>
+					))}
+				</div>
+			) : null}
+		</div>
 	);
 }
 

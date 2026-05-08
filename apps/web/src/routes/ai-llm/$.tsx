@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
 
 import { SectionDocPage } from "@/components/doc-page";
 
@@ -7,6 +7,7 @@ export const Route = createFileRoute("/ai-llm/$")({
 });
 
 function AiLlmSplatRoute() {
-	const params = Route.useParams() as { _splat?: string };
-	return <SectionDocPage section="ai-llm" splat={params._splat} />;
+	const pathname = useLocation({ select: (location) => location.pathname });
+	const splat = pathname.replace(/^\/ai-llm\/?/, "");
+	return <SectionDocPage section="ai-llm" splat={splat} />;
 }

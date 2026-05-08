@@ -1,18 +1,18 @@
 import { Button } from "@docs-badry/ui/components/button";
-import { BookOpen, Menu, Moon, Search, Sun } from "lucide-react";
+import { Menu, Moon, Search, Sun } from "lucide-react";
+
+import { profile } from "@/content/profile";
 
 type HeaderProps = {
 	onOpenSearch: () => void;
 	onToggleSidebar: () => void;
 	onToggleTheme: () => void;
-	theme: "dark" | "light";
 };
 
 export default function Header({
 	onOpenSearch,
 	onToggleSidebar,
 	onToggleTheme,
-	theme,
 }: HeaderProps) {
 	return (
 		<header className="sticky top-0 z-20 border-b bg-background/90 backdrop-blur">
@@ -28,10 +28,12 @@ export default function Header({
 					<Menu className="size-4" />
 				</Button>
 				<a className="flex min-w-0 items-center gap-2 font-semibold" href="/">
-					<span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-						<BookOpen className="size-4" />
-					</span>
-					<span className="truncate text-sm">Badry Docs</span>
+					<img
+						alt={`${profile.shortName} logo`}
+						className="size-8 shrink-0 rounded-full border bg-white object-cover"
+						src="/logo.png"
+					/>
+					<span className="truncate text-sm">{profile.shortName} Docs</span>
 				</a>
 				<div className="min-w-0 flex-1" />
 				<button
@@ -64,11 +66,8 @@ export default function Header({
 					type="button"
 					variant="ghost"
 				>
-					{theme === "dark" ? (
-						<Sun className="size-4" />
-					) : (
-						<Moon className="size-4" />
-					)}
+					<Sun className="hidden size-4 dark:block" />
+					<Moon className="size-4 dark:hidden" />
 				</Button>
 			</div>
 		</header>

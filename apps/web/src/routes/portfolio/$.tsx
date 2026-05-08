@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
 
 import { SectionDocPage } from "@/components/doc-page";
 
@@ -7,6 +7,7 @@ export const Route = createFileRoute("/portfolio/$")({
 });
 
 function PortfolioSplatRoute() {
-	const params = Route.useParams() as { _splat?: string };
-	return <SectionDocPage section="portfolio" splat={params._splat} />;
+	const pathname = useLocation({ select: (location) => location.pathname });
+	const splat = pathname.replace(/^\/portfolio\/?/, "");
+	return <SectionDocPage section="portfolio" splat={splat} />;
 }

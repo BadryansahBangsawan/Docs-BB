@@ -4,6 +4,16 @@ type MarkdownContentProps = {
 	content: string;
 };
 
+type TableCell = {
+	id: string;
+	text: string;
+};
+
+type TableRow = {
+	cells: TableCell[];
+	id: string;
+};
+
 function slugify(value: string) {
 	return value
 		.toLowerCase()
@@ -73,13 +83,50 @@ function renderInline(text: string): ReactNode[] {
 	return parts;
 }
 
+function isTableRow(line: string) {
+	return line.includes("|");
+}
+
+function isTableSeparator(line: string) {
+	return /^:?-+:?$/.test(line.replace(/^\||\|$/g, "").trim())
+		? true
+		: line
+				.replace(/^\||\|$/g, "")
+				.split("|")
+				.every((cell) => /^:?-+:?$/.test(cell.trim()));
+}
+
+function parseTableRow(
+	line: string,
+	rowId: string,
+	nextCellId: () => string,
+): TableRow {
+	return line
+		.replace(/^\||\|$/g, "")
+		.split("|")
+		.map((cell) => ({
+			id: nextCellId(),
+			text: cell.trim(),
+		}))
+		.reduce<TableRow>(
+			(row, cell) => {
+				row.cells.push(cell);
+				return row;
+			},
+			{ cells: [], id: rowId },
+		);
+}
+
 export function MarkdownContent({ content }: MarkdownContentProps) {
 	const elements: ReactNode[] = [];
 	const paragraph: string[] = [];
 	const listItems: Array<{ id: string; text: string }> = [];
+	const tableRows: TableRow[] = [];
 	let listItemId = 0;
 	let orderedList = false;
-	let codeFence: string[] | null = null;
+	let tableCellId = 0;
+	let tableRowId = 0;
+	let codeFence: { marker: string; lines: string[] } | null = null;
 
 	function flushParagraph() {
 		if (paragraph.length === 0) {
@@ -120,38 +167,106 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 		listItems.length = 0;
 	}
 
-	for (const line of content.split("\n")) {
-		if (line.startsWith("```")) {
-			flushParagraph();
-			flushList();
+	function flushTable() {
+		if (tableRows.length === 0) {
+			return;
+		}
 
-			if (codeFence) {
+		const [headingRow, ...rows] = tableRows;
+		const headings = headingRow.cells;
+		elements.push(
+			<div
+				key={`table-${elements.length}`}
+				className="overflow-x-auto rounded-md border"
+			>
+				<table className="w-full min-w-[640px] border-collapse text-sm">
+					<thead className="bg-muted/70 text-foreground">
+						<tr>
+							{headings.map((heading) => (
+								<th
+									className="border-b px-3 py-2 text-left font-semibold"
+									key={heading.id}
+								>
+									{renderInline(heading.text)}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{rows.map((row) => (
+							<tr className="odd:bg-background even:bg-muted/30" key={row.id}>
+								{row.cells.map((cell) => (
+									<td
+										className="border-b px-3 py-2 text-muted-foreground last:border-r-0"
+										key={cell.id}
+									>
+										{renderInline(cell.text)}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>,
+		);
+		tableRows.length = 0;
+	}
+
+	for (const line of content.split("\n")) {
+		const trimmedLine = line.trim();
+		const fenceMatch = trimmedLine.match(/^(`{3,}|~{3,})/);
+
+		if (codeFence) {
+			if (trimmedLine.startsWith(codeFence.marker)) {
 				elements.push(
 					<pre
 						key={`code-${elements.length}`}
 						className="overflow-x-auto rounded-md border bg-muted/60 p-4 text-sm leading-6"
 					>
-						<code>{codeFence.join("\n")}</code>
+						<code>{codeFence.lines.join("\n")}</code>
 					</pre>,
 				);
 				codeFence = null;
-			} else {
-				codeFence = [];
+				continue;
+			}
+
+			codeFence.lines.push(line);
+			continue;
+		}
+
+		if (fenceMatch) {
+			flushParagraph();
+			flushList();
+			flushTable();
+			codeFence = { marker: fenceMatch[1], lines: [] };
+			continue;
+		}
+
+		const trimmed = trimmedLine;
+		if (!trimmed) {
+			flushParagraph();
+			flushList();
+			flushTable();
+			continue;
+		}
+
+		if (isTableRow(trimmed)) {
+			flushParagraph();
+			flushList();
+			if (!isTableSeparator(trimmed)) {
+				tableRows.push(
+					parseTableRow(trimmed, `table-row-${tableRowId}`, () => {
+						const id = `table-cell-${tableCellId}`;
+						tableCellId += 1;
+						return id;
+					}),
+				);
+				tableRowId += 1;
 			}
 			continue;
 		}
 
-		if (codeFence) {
-			codeFence.push(line);
-			continue;
-		}
-
-		const trimmed = line.trim();
-		if (!trimmed) {
-			flushParagraph();
-			flushList();
-			continue;
-		}
+		flushTable();
 
 		const heading = trimmed.match(/^(#{1,4})\s+(.+)$/);
 		if (heading) {
@@ -212,6 +327,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 
 	flushParagraph();
 	flushList();
+	flushTable();
 
 	if (codeFence) {
 		elements.push(
@@ -219,7 +335,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 				key={`code-${elements.length}`}
 				className="overflow-x-auto rounded-md border bg-muted/60 p-4 text-sm leading-6"
 			>
-				<code>{codeFence.join("\n")}</code>
+				<code>{codeFence.lines.join("\n")}</code>
 			</pre>,
 		);
 	}

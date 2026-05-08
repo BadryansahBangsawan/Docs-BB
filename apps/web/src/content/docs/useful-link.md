@@ -1,6 +1,6 @@
 ---
 title: Useful Links
-description: Curated references for tools, reading lists, docs, and engineering resources.
+description: Contact channels, social profiles, and curated references from the portfolio source.
 category: Useful Links
 author: Badry
 date: 2026-05-08
@@ -9,14 +9,19 @@ order: 40
 
 # Useful Links
 
-This section keeps reusable references close to the project notes that need them.
+This section keeps contact channels and reusable references close to the project notes that need them.
 
-## Link Quality
+## Contact Channels
 
-Good links should include context, not only a URL. Add why the resource is useful and when to use it.
+- [Email](mailto:badryansah99@gmail.com)
+- [Instagram](https://www.instagram.com/badryanbangsawan/)
+- [LinkedIn](https://www.linkedin.com/in/badryansah-bangsawan-19653a31a/)
+- [TikTok](https://www.tiktok.com/@bcdlopdaa)
+- [GitHub](https://github.com/BadryansahBangsawan)
 
 ## Groups
 
+- Contact and social profiles
 - Recommended tools
 - Reading lists
 - Official documentation

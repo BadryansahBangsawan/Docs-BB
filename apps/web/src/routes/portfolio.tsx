@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { SectionDocPage } from "@/components/doc-page";
+import { SectionRoutePage } from "@/components/doc-page";
 
 export const Route = createFileRoute("/portfolio")({
-	component: () => <SectionDocPage section="portfolio" />,
+	component: () => <SectionRoutePage section="portfolio" />,
 });

@@ -1,6 +1,6 @@
 ---
 title: Portfolio
-description: Case studies for client work, project delivery, constraints, and measurable outcomes.
+description: Case studies and project references mirrored from Badryansah Bangsawan's portfolio website.
 category: Portfolio
 author: Badry
 date: 2026-05-08
@@ -9,15 +9,20 @@ order: 20
 
 # Portfolio
 
-Portfolio entries are written as case studies. The useful version explains what changed, why it mattered, and how the work was validated.
+This section mirrors project information from `badryansahbangsawan.my.id`.
 
-## Case Study Shape
+## Source Profile
 
-- Client context
-- Problem and constraints
-- Delivery scope
-- Result and follow-up
+Badryansah Bangsawan is a Software Engineer and coding content creator based in Makassar, Indonesia. The work focuses on scalable web platforms, maintainable architecture, and modern TypeScript/Next.js delivery.
 
-## Writing Standard
+## Portfolio Scope
 
-Prefer concrete details over broad claims. Screenshots, dates, metrics, and before or after notes make the page easier to trust.
+- Private and open-source projects
+- Client and public project notes
+- Live demo links
+- Source links where available
+- Tech stacks for each project
+
+## Project Index
+
+See [Portfolio Projects](/portfolio/projects) for the full list.

@@ -1,22 +1,24 @@
 ---
 title: AI & LLM
-description: Notes about language models, prompting, local inference, and agent workflows.
+description: Documentation for AI and Large Language Model tools and configurations.
 category: AI & LLM
 author: Badry
 date: 2026-05-08
 order: 10
+source: https://docs.bahrul.me/ai-llm
 ---
 
 # AI & LLM
 
-This section collects practical notes for working with language models in daily engineering work.
+Welcome to the AI & LLM documentation section. Here you'll find guides and tutorials for working with AI tools, language models, and related configurations.
 
-## Focus Areas
+## Quick Links
 
-- Prompt design for repeatable outcomes
-- Local model setup for private experiments
-- Agent workflows for planning, coding, review, and documentation
+- [Set Alias](/ai-llm/set-alias)
 
-## Baseline Format
+- [MCP Server Setup](/ai-llm/mcp-server)
 
-Each note should include the problem, the working pattern, tradeoffs, and a short example that can be reused later.
+- [Claude Plugin Development](/ai-llm/claude-plugin)
+
+- [Spec-Driven Dev Tools](/ai-llm/spec-driven-development)
+- [Prompt Master](/ai-llm/prompt-master)

@@ -81,18 +81,37 @@ function parseFrontmatter(source: string) {
 }
 
 function extractHeadings(markdown: string): DocHeading[] {
-	return markdown
-		.split("\n")
-		.map((line) => line.match(/^(#{1,4})\s+(.+)$/))
-		.filter((match): match is RegExpMatchArray => Boolean(match))
-		.map((match) => {
+	const headings: DocHeading[] = [];
+	let codeFenceMarker: string | null = null;
+
+	for (const line of markdown.split("\n")) {
+		const trimmed = line.trim();
+		const fenceMatch = trimmed.match(/^(`{3,}|~{3,})/);
+
+		if (codeFenceMarker) {
+			if (trimmed.startsWith(codeFenceMarker)) {
+				codeFenceMarker = null;
+			}
+			continue;
+		}
+
+		if (fenceMatch) {
+			codeFenceMarker = fenceMatch[1];
+			continue;
+		}
+
+		const match = line.match(/^(#{1,4})\s+(.+)$/);
+		if (match) {
 			const text = match[2].replace(/[`*_]/g, "").trim();
-			return {
+			headings.push({
 				id: toSlug(text),
 				depth: match[1].length,
 				text,
-			};
-		});
+			});
+		}
+	}
+
+	return headings;
 }
 
 function getSlugFromPath(path: string) {

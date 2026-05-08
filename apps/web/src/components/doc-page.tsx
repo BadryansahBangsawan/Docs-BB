@@ -1,3 +1,4 @@
+import { Outlet, useLocation } from "@tanstack/react-router";
 import {
 	ArrowLeft,
 	ArrowRight,
@@ -195,4 +196,15 @@ export function SectionDocPage({
 	splat?: string;
 }) {
 	return <DocPage slug={splat ? `${section}/${splat}` : section} />;
+}
+
+export function SectionRoutePage({ section }: { section: string }) {
+	const pathname = useLocation({ select: (location) => location.pathname });
+	const normalizedPath = pathname.replace(/\/+$/g, "");
+
+	if (normalizedPath === `/${section}`) {
+		return <SectionDocPage section={section} />;
+	}
+
+	return <Outlet />;
 }
