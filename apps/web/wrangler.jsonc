@@ -1,0 +1,17 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "docs-badry",
+	"account_id": "affb450d746e53150028bb763b2f640c",
+	"compatibility_date": "2026-05-09",
+	"compatibility_flags": ["nodejs_compat"],
+	"main": "@tanstack/react-start/server-entry",
+	"observability": {
+		"enabled": true
+	},
+	"routes": [
+		{
+			"pattern": "docs.badryansahbangsawan.my.id",
+			"custom_domain": true
+		}
+	]
+}

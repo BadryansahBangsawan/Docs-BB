@@ -24,6 +24,8 @@
 		"dev": "bun run --filter '*' dev",
 		"build": "bun run --filter '*' build",
 		"check-types": "bun run --filter '*' check-types",
+		"deploy": "bun run --filter web deploy",
+		"deploy:web": "bun run --filter web deploy",
 		"dev:web": "bun run --filter web dev",
 		"db:push": "bun run --filter @docs-badry/db db:push",
 		"db:studio": "bun run --filter @docs-badry/db db:studio",
@@ -39,6 +41,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.0",
+		"@cloudflare/workers-types": "^4.20260509.1",
 		"@docs-badry/config": "workspace:*",
 		"@types/node": "catalog:",
 		"typescript": "catalog:"
