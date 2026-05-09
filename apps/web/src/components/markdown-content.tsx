@@ -58,10 +58,12 @@ function renderInline(text: string): ReactNode[] {
 			if (linkMatch) {
 				const href = linkMatch[2];
 				const isExternal = /^https?:\/\//.test(href);
+				const isDownload = !isExternal && /\.pdf(?:[?#].*)?$/i.test(href);
 				parts.push(
 					<a
 						key={`${token}-${match.index}`}
 						className="font-medium text-primary underline underline-offset-4"
+						download={isDownload ? href.split("/").pop() : undefined}
 						href={href}
 						rel={isExternal ? "noreferrer" : undefined}
 						target={isExternal ? "_blank" : undefined}

@@ -21,6 +21,7 @@ This section keeps contact channels and reusable references close to the project
 
 ## Groups
 
+- CV download
 - Contact and social profiles
 - Recommended tools
 - Official documentation
