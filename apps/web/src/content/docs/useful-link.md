@@ -23,6 +23,5 @@ This section keeps contact channels and reusable references close to the project
 
 - Contact and social profiles
 - Recommended tools
-- Reading lists
 - Official documentation
 - Deployment references

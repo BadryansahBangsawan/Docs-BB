@@ -4,6 +4,7 @@ export type DocMeta = {
 	category: string;
 	author?: string;
 	date?: string;
+	image?: string;
 	order: number;
 };
 
@@ -35,7 +36,7 @@ const rawDocs = import.meta.glob("./docs/**/*.md", {
 	query: "?raw",
 }) as Record<string, string>;
 
-const sectionOrder = ["ai-llm", "portfolio", "project", "useful-link"] as const;
+const sectionOrder = ["ai-llm", "portfolio", "useful-link"] as const;
 
 function toSlug(value: string) {
 	return value
@@ -133,6 +134,7 @@ function toDoc(path: string, source: string): Doc {
 		category,
 		author: typeof data.author === "string" ? data.author : undefined,
 		date: typeof data.date === "string" ? data.date : undefined,
+		image: typeof data.image === "string" ? data.image : undefined,
 		order,
 		slug,
 		href: `/${slug}`,

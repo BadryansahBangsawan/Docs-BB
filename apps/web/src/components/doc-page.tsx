@@ -1,3 +1,4 @@
+import { cn } from "@docs-badry/ui/lib/utils";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import {
 	ArrowLeft,
@@ -108,12 +109,30 @@ export function DocPage({ slug }: DocPageProps) {
 						<div className="mt-4 grid gap-3 sm:grid-cols-2">
 							{childDocs.map((child) => (
 								<a
-									className="group rounded-lg border p-4 transition-colors hover:bg-muted/60"
+									className={cn(
+										"group rounded-lg border transition-colors hover:bg-muted/60",
+										child.image ? "overflow-hidden" : "p-4",
+									)}
 									href={child.href}
 									key={child.slug}
 								>
-									<div className="flex items-start gap-3">
-										<FileText className="mt-0.5 size-4 shrink-0 text-primary" />
+									{child.image ? (
+										<img
+											alt={child.title}
+											className="aspect-video w-full border-b bg-muted object-cover"
+											loading="lazy"
+											src={child.image}
+										/>
+									) : null}
+									<div
+										className={cn(
+											"flex items-start gap-3",
+											child.image ? "p-4" : "",
+										)}
+									>
+										{child.image ? null : (
+											<FileText className="mt-0.5 size-4 shrink-0 text-primary" />
+										)}
 										<div className="min-w-0">
 											<h3 className="font-semibold text-foreground text-sm group-hover:underline">
 												{child.title}
@@ -128,31 +147,25 @@ export function DocPage({ slug }: DocPageProps) {
 						</div>
 					</section>
 				) : null}
-				<nav className="grid gap-3 border-t pt-6 sm:grid-cols-2">
+				<nav className="flex items-center justify-between border-t pt-4">
 					{previous ? (
 						<a
-							className="rounded-lg border p-4 transition-colors hover:bg-muted/60"
+							className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 font-medium text-muted-foreground text-xs transition-colors hover:bg-muted hover:text-foreground"
 							href={previous.href}
 						>
-							<span className="mb-2 inline-flex items-center gap-2 text-muted-foreground text-xs">
-								<ArrowLeft className="size-3.5" />
-								Previous
-							</span>
-							<div className="font-medium text-sm">{previous.title}</div>
+							<ArrowLeft className="size-3.5" />
+							Previous
 						</a>
 					) : (
 						<span />
 					)}
 					{next ? (
 						<a
-							className="rounded-lg border p-4 text-right transition-colors hover:bg-muted/60"
+							className="inline-flex h-8 items-center gap-1.5 rounded-md border px-3 font-medium text-muted-foreground text-xs transition-colors hover:bg-muted hover:text-foreground"
 							href={next.href}
 						>
-							<span className="mb-2 inline-flex items-center gap-2 text-muted-foreground text-xs">
-								Next
-								<ArrowRight className="size-3.5" />
-							</span>
-							<div className="font-medium text-sm">{next.title}</div>
+							Next
+							<ArrowRight className="size-3.5" />
 						</a>
 					) : null}
 				</nav>

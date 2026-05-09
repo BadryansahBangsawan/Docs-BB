@@ -117,6 +117,20 @@ function parseTableRow(
 		);
 }
 
+function parseImage(line: string) {
+	const match = line.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
+
+	if (!match) {
+		return null;
+	}
+
+	return {
+		alt: match[1],
+		src: match[2],
+		caption: match[3],
+	};
+}
+
 export function MarkdownContent({ content }: MarkdownContentProps) {
 	const elements: ReactNode[] = [];
 	const paragraph: string[] = [];
@@ -267,6 +281,31 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
 		}
 
 		flushTable();
+
+		const image = parseImage(trimmed);
+		if (image) {
+			flushParagraph();
+			flushList();
+			elements.push(
+				<figure
+					key={`image-${elements.length}`}
+					className="overflow-hidden rounded-lg border bg-muted/30"
+				>
+					<img
+						alt={image.alt}
+						className="aspect-video w-full object-cover"
+						loading="lazy"
+						src={image.src}
+					/>
+					{image.caption ? (
+						<figcaption className="border-t px-4 py-2 text-muted-foreground text-xs">
+							{image.caption}
+						</figcaption>
+					) : null}
+				</figure>,
+			);
+			continue;
+		}
 
 		const heading = trimmed.match(/^(#{1,4})\s+(.+)$/);
 		if (heading) {

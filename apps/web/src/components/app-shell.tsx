@@ -7,7 +7,6 @@ import {
 	FileText,
 	Folder,
 	Home,
-	Layers,
 	Link as LinkIcon,
 	Search,
 	Sparkles,
@@ -37,7 +36,6 @@ type ThemeMode = "dark" | "light";
 const sectionIcons = {
 	"ai-llm": Sparkles,
 	portfolio: Briefcase,
-	project: Layers,
 	"useful-link": LinkIcon,
 };
 

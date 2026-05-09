@@ -136,9 +136,8 @@ function HomeComponent() {
 						Docs Library
 					</h2>
 					<p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-6">
-						The docs are organized into AI notes, portfolio work, project
-						references, and useful links so the portfolio data can grow into a
-						working knowledge base.
+						The docs are organized into AI notes, portfolio work, and useful
+						links so the portfolio data can grow into a working knowledge base.
 					</p>
 					<div className="mt-5 grid gap-3 sm:grid-cols-2">
 						{categoryDocs.map((doc) => (

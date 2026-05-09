@@ -10,12 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsefulLinkRouteImport } from './routes/useful-link'
-import { Route as ProjectRouteImport } from './routes/project'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as AiLlmRouteImport } from './routes/ai-llm'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsefulLinkSplatRouteImport } from './routes/useful-link/$'
-import { Route as ProjectSplatRouteImport } from './routes/project/$'
 import { Route as PortfolioSplatRouteImport } from './routes/portfolio/$'
 import { Route as AiLlmSplatRouteImport } from './routes/ai-llm/$'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
@@ -23,11 +21,6 @@ import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 const UsefulLinkRoute = UsefulLinkRouteImport.update({
   id: '/useful-link',
   path: '/useful-link',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectRoute = ProjectRouteImport.update({
-  id: '/project',
-  path: '/project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioRoute = PortfolioRouteImport.update({
@@ -50,11 +43,6 @@ const UsefulLinkSplatRoute = UsefulLinkSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => UsefulLinkRoute,
 } as any)
-const ProjectSplatRoute = ProjectSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => ProjectRoute,
-} as any)
 const PortfolioSplatRoute = PortfolioSplatRouteImport.update({
   id: '/$',
   path: '/$',
@@ -75,11 +63,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
-  '/project': typeof ProjectRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
-  '/project/$': typeof ProjectSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
@@ -87,11 +73,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
-  '/project': typeof ProjectRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
-  '/project/$': typeof ProjectSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
@@ -100,11 +84,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
-  '/project': typeof ProjectRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
-  '/project/$': typeof ProjectSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
@@ -114,11 +96,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-llm'
     | '/portfolio'
-    | '/project'
     | '/useful-link'
     | '/ai-llm/$'
     | '/portfolio/$'
-    | '/project/$'
     | '/useful-link/$'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
@@ -126,11 +106,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-llm'
     | '/portfolio'
-    | '/project'
     | '/useful-link'
     | '/ai-llm/$'
     | '/portfolio/$'
-    | '/project/$'
     | '/useful-link/$'
     | '/api/trpc/$'
   id:
@@ -138,11 +116,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-llm'
     | '/portfolio'
-    | '/project'
     | '/useful-link'
     | '/ai-llm/$'
     | '/portfolio/$'
-    | '/project/$'
     | '/useful-link/$'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
@@ -151,7 +127,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiLlmRoute: typeof AiLlmRouteWithChildren
   PortfolioRoute: typeof PortfolioRouteWithChildren
-  ProjectRoute: typeof ProjectRouteWithChildren
   UsefulLinkRoute: typeof UsefulLinkRouteWithChildren
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
@@ -163,13 +138,6 @@ declare module '@tanstack/react-router' {
       path: '/useful-link'
       fullPath: '/useful-link'
       preLoaderRoute: typeof UsefulLinkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/project': {
-      id: '/project'
-      path: '/project'
-      fullPath: '/project'
-      preLoaderRoute: typeof ProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portfolio': {
@@ -199,13 +167,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/useful-link/$'
       preLoaderRoute: typeof UsefulLinkSplatRouteImport
       parentRoute: typeof UsefulLinkRoute
-    }
-    '/project/$': {
-      id: '/project/$'
-      path: '/$'
-      fullPath: '/project/$'
-      preLoaderRoute: typeof ProjectSplatRouteImport
-      parentRoute: typeof ProjectRoute
     }
     '/portfolio/$': {
       id: '/portfolio/$'
@@ -253,17 +214,6 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
   PortfolioRouteChildren,
 )
 
-interface ProjectRouteChildren {
-  ProjectSplatRoute: typeof ProjectSplatRoute
-}
-
-const ProjectRouteChildren: ProjectRouteChildren = {
-  ProjectSplatRoute: ProjectSplatRoute,
-}
-
-const ProjectRouteWithChildren =
-  ProjectRoute._addFileChildren(ProjectRouteChildren)
-
 interface UsefulLinkRouteChildren {
   UsefulLinkSplatRoute: typeof UsefulLinkSplatRoute
 }
@@ -280,7 +230,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiLlmRoute: AiLlmRouteWithChildren,
   PortfolioRoute: PortfolioRouteWithChildren,
-  ProjectRoute: ProjectRouteWithChildren,
   UsefulLinkRoute: UsefulLinkRouteWithChildren,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
