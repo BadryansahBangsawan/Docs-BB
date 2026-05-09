@@ -1,31 +1,62 @@
 import { Button } from "@docs-badry/ui/components/button";
-import { Menu, Moon, Search, Sun } from "lucide-react";
+import {
+	Menu,
+	Moon,
+	PanelLeftClose,
+	PanelLeftOpen,
+	Search,
+	Sun,
+} from "lucide-react";
 
 import { profile } from "@/content/profile";
 
 type HeaderProps = {
+	isDesktopSidebarOpen: boolean;
+	onOpenMobileSidebar: () => void;
 	onOpenSearch: () => void;
-	onToggleSidebar: () => void;
+	onToggleDesktopSidebar: () => void;
 	onToggleTheme: () => void;
 };
 
 export default function Header({
+	isDesktopSidebarOpen,
+	onOpenMobileSidebar,
 	onOpenSearch,
-	onToggleSidebar,
+	onToggleDesktopSidebar,
 	onToggleTheme,
 }: HeaderProps) {
+	const desktopSidebarLabel = isDesktopSidebarOpen
+		? "Close navigation"
+		: "Open navigation";
+
 	return (
 		<header className="sticky top-0 z-20 border-b bg-background/90 backdrop-blur">
 			<div className="mx-auto flex h-14 w-full max-w-[1480px] items-center gap-3 px-4 sm:px-6 lg:px-8">
 				<Button
 					aria-label="Open navigation"
 					className="lg:hidden"
-					onClick={onToggleSidebar}
+					onClick={onOpenMobileSidebar}
 					size="icon-sm"
 					type="button"
 					variant="ghost"
 				>
 					<Menu className="size-4" />
+				</Button>
+				<Button
+					aria-label={desktopSidebarLabel}
+					aria-pressed={isDesktopSidebarOpen}
+					className="hidden lg:inline-flex"
+					onClick={onToggleDesktopSidebar}
+					size="icon-sm"
+					title={desktopSidebarLabel}
+					type="button"
+					variant="ghost"
+				>
+					{isDesktopSidebarOpen ? (
+						<PanelLeftClose className="size-4" />
+					) : (
+						<PanelLeftOpen className="size-4" />
+					)}
 				</Button>
 				<a className="flex min-w-0 items-center gap-2 font-semibold" href="/">
 					<img

@@ -110,7 +110,8 @@ function getActiveParentGroups(pathname: string) {
 
 export function AppShell({ children }: AppShellProps) {
 	const [searchOpen, setSearchOpen] = useState(false);
-	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 	const [theme, setTheme] = useState<ThemeMode>("light");
 
 	useEffect(() => {
@@ -125,7 +126,7 @@ export function AppShell({ children }: AppShellProps) {
 			}
 			if (event.key === "Escape") {
 				setSearchOpen(false);
-				setSidebarOpen(false);
+				setMobileSidebarOpen(false);
 			}
 		}
 
@@ -136,8 +137,10 @@ export function AppShell({ children }: AppShellProps) {
 	return (
 		<div className="min-h-svh bg-background text-foreground">
 			<Header
+				isDesktopSidebarOpen={desktopSidebarOpen}
+				onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
 				onOpenSearch={() => setSearchOpen(true)}
-				onToggleSidebar={() => setSidebarOpen((value) => !value)}
+				onToggleDesktopSidebar={() => setDesktopSidebarOpen((value) => !value)}
 				onToggleTheme={() => {
 					const nextTheme = theme === "dark" ? "light" : "dark";
 					applyTheme(nextTheme);
@@ -145,7 +148,11 @@ export function AppShell({ children }: AppShellProps) {
 				}}
 			/>
 			<div className="mx-auto flex w-full max-w-[1480px]">
-				<Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+				<Sidebar
+					isDesktopOpen={desktopSidebarOpen}
+					isMobileOpen={mobileSidebarOpen}
+					onClose={() => setMobileSidebarOpen(false)}
+				/>
 				<main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
 					{children}
 				</main>
@@ -156,10 +163,12 @@ export function AppShell({ children }: AppShellProps) {
 }
 
 function Sidebar({
-	isOpen,
+	isDesktopOpen,
+	isMobileOpen,
 	onClose,
 }: {
-	isOpen: boolean;
+	isDesktopOpen: boolean;
+	isMobileOpen: boolean;
 	onClose: () => void;
 }) {
 	const pathname = useLocation({ select: (location) => location.pathname });
@@ -216,15 +225,18 @@ function Sidebar({
 				aria-label="Close navigation"
 				className={cn(
 					"fixed inset-0 z-30 bg-background/70 backdrop-blur-sm transition-opacity lg:hidden",
-					isOpen ? "opacity-100" : "pointer-events-none opacity-0",
+					isMobileOpen ? "opacity-100" : "pointer-events-none opacity-0",
 				)}
 				onClick={onClose}
 				type="button"
 			/>
 			<aside
 				className={cn(
-					"fixed top-0 bottom-0 left-0 z-40 w-[280px] border-r bg-background transition-transform lg:sticky lg:top-14 lg:z-0 lg:h-[calc(100svh-3.5rem)] lg:translate-x-0",
-					isOpen ? "translate-x-0" : "-translate-x-full",
+					"fixed top-0 bottom-0 left-0 z-40 w-[280px] border-r bg-background transition-[transform,width] duration-200 lg:sticky lg:top-14 lg:z-0 lg:h-[calc(100svh-3.5rem)] lg:overflow-hidden",
+					isMobileOpen ? "translate-x-0" : "-translate-x-full",
+					isDesktopOpen
+						? "lg:w-[280px] lg:translate-x-0"
+						: "lg:w-0 lg:-translate-x-full lg:border-r-0",
 				)}
 			>
 				<div className="flex h-14 items-center justify-between border-b px-4 lg:hidden">
