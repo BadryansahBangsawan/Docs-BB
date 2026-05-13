@@ -31,6 +31,7 @@ import { useTRPC } from "@/utils/trpc";
 
 export const Route = createFileRoute("/admin")({
 	component: AdminLayout,
+	ssr: false,
 	beforeLoad: async ({ context, location }) => {
 		if (location.pathname === "/admin/login") {
 			return;
