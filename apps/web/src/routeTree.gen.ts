@@ -12,11 +12,25 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsefulLinkRouteImport } from './routes/useful-link'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as AiLlmRouteImport } from './routes/ai-llm'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsefulLinkSplatRouteImport } from './routes/useful-link/$'
 import { Route as PortfolioSplatRouteImport } from './routes/portfolio/$'
 import { Route as AiLlmSplatRouteImport } from './routes/ai-llm/$'
+import { Route as AdminUsefulLinksRouteImport } from './routes/admin/useful-links'
+import { Route as AdminSocialLinksRouteImport } from './routes/admin/social-links'
+import { Route as AdminProfileRouteImport } from './routes/admin/profile'
+import { Route as AdminPortfolioRouteImport } from './routes/admin/portfolio'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminDocumentsRouteImport } from './routes/admin/documents'
+import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
+import { Route as AdminPortfolioNewRouteImport } from './routes/admin/portfolio/new'
+import { Route as AdminPortfolioIdRouteImport } from './routes/admin/portfolio/$id'
+import { Route as AdminDocumentsNewRouteImport } from './routes/admin/documents/new'
+import { Route as AdminDocumentsIdRouteImport } from './routes/admin/documents/$id'
 
 const UsefulLinkRoute = UsefulLinkRouteImport.update({
   id: '/useful-link',
@@ -33,10 +47,20 @@ const AiLlmRoute = AiLlmRouteImport.update({
   path: '/ai-llm',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const UsefulLinkSplatRoute = UsefulLinkSplatRouteImport.update({
   id: '/$',
@@ -53,20 +77,94 @@ const AiLlmSplatRoute = AiLlmSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => AiLlmRoute,
 } as any)
+const AdminUsefulLinksRoute = AdminUsefulLinksRouteImport.update({
+  id: '/useful-links',
+  path: '/useful-links',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSocialLinksRoute = AdminSocialLinksRouteImport.update({
+  id: '/social-links',
+  path: '/social-links',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortfolioRoute = AdminPortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPortfolioNewRoute = AdminPortfolioNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPortfolioRoute,
+} as any)
+const AdminPortfolioIdRoute = AdminPortfolioIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminPortfolioRoute,
+} as any)
+const AdminDocumentsNewRoute = AdminDocumentsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminDocumentsRoute,
+} as any)
+const AdminDocumentsIdRoute = AdminDocumentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminDocumentsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/documents': typeof AdminDocumentsRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/portfolio': typeof AdminPortfolioRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/social-links': typeof AdminSocialLinksRoute
+  '/admin/useful-links': typeof AdminUsefulLinksRoute
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/documents/$id': typeof AdminDocumentsIdRoute
+  '/admin/documents/new': typeof AdminDocumentsNewRoute
+  '/admin/portfolio/$id': typeof AdminPortfolioIdRoute
+  '/admin/portfolio/new': typeof AdminPortfolioNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
@@ -74,32 +172,73 @@ export interface FileRoutesByTo {
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/documents': typeof AdminDocumentsRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/portfolio': typeof AdminPortfolioRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/social-links': typeof AdminSocialLinksRoute
+  '/admin/useful-links': typeof AdminUsefulLinksRoute
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/documents/$id': typeof AdminDocumentsIdRoute
+  '/admin/documents/new': typeof AdminDocumentsNewRoute
+  '/admin/portfolio/$id': typeof AdminPortfolioIdRoute
+  '/admin/portfolio/new': typeof AdminPortfolioNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/ai-llm': typeof AiLlmRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
   '/useful-link': typeof UsefulLinkRouteWithChildren
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/documents': typeof AdminDocumentsRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/portfolio': typeof AdminPortfolioRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/social-links': typeof AdminSocialLinksRoute
+  '/admin/useful-links': typeof AdminUsefulLinksRoute
   '/ai-llm/$': typeof AiLlmSplatRoute
   '/portfolio/$': typeof PortfolioSplatRoute
   '/useful-link/$': typeof UsefulLinkSplatRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/documents/$id': typeof AdminDocumentsIdRoute
+  '/admin/documents/new': typeof AdminDocumentsNewRoute
+  '/admin/portfolio/$id': typeof AdminPortfolioIdRoute
+  '/admin/portfolio/new': typeof AdminPortfolioNewRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/ai-llm'
     | '/portfolio'
     | '/useful-link'
+    | '/admin/analytics'
+    | '/admin/categories'
+    | '/admin/documents'
+    | '/admin/login'
+    | '/admin/portfolio'
+    | '/admin/profile'
+    | '/admin/social-links'
+    | '/admin/useful-links'
     | '/ai-llm/$'
     | '/portfolio/$'
     | '/useful-link/$'
+    | '/admin/'
+    | '/admin/documents/$id'
+    | '/admin/documents/new'
+    | '/admin/portfolio/$id'
+    | '/admin/portfolio/new'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -107,24 +246,52 @@ export interface FileRouteTypes {
     | '/ai-llm'
     | '/portfolio'
     | '/useful-link'
+    | '/admin/analytics'
+    | '/admin/categories'
+    | '/admin/documents'
+    | '/admin/login'
+    | '/admin/portfolio'
+    | '/admin/profile'
+    | '/admin/social-links'
+    | '/admin/useful-links'
     | '/ai-llm/$'
     | '/portfolio/$'
     | '/useful-link/$'
+    | '/admin'
+    | '/admin/documents/$id'
+    | '/admin/documents/new'
+    | '/admin/portfolio/$id'
+    | '/admin/portfolio/new'
     | '/api/trpc/$'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/ai-llm'
     | '/portfolio'
     | '/useful-link'
+    | '/admin/analytics'
+    | '/admin/categories'
+    | '/admin/documents'
+    | '/admin/login'
+    | '/admin/portfolio'
+    | '/admin/profile'
+    | '/admin/social-links'
+    | '/admin/useful-links'
     | '/ai-llm/$'
     | '/portfolio/$'
     | '/useful-link/$'
+    | '/admin/'
+    | '/admin/documents/$id'
+    | '/admin/documents/new'
+    | '/admin/portfolio/$id'
+    | '/admin/portfolio/new'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AiLlmRoute: typeof AiLlmRouteWithChildren
   PortfolioRoute: typeof PortfolioRouteWithChildren
   UsefulLinkRoute: typeof UsefulLinkRouteWithChildren
@@ -154,12 +321,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiLlmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/useful-link/$': {
       id: '/useful-link/$'
@@ -182,6 +363,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiLlmSplatRouteImport
       parentRoute: typeof AiLlmRoute
     }
+    '/admin/useful-links': {
+      id: '/admin/useful-links'
+      path: '/useful-links'
+      fullPath: '/admin/useful-links'
+      preLoaderRoute: typeof AdminUsefulLinksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/social-links': {
+      id: '/admin/social-links'
+      path: '/social-links'
+      fullPath: '/admin/social-links'
+      preLoaderRoute: typeof AdminSocialLinksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portfolio': {
+      id: '/admin/portfolio'
+      path: '/portfolio'
+      fullPath: '/admin/portfolio'
+      preLoaderRoute: typeof AdminPortfolioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/documents': {
+      id: '/admin/documents'
+      path: '/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AdminDocumentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -189,8 +426,90 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/portfolio/new': {
+      id: '/admin/portfolio/new'
+      path: '/new'
+      fullPath: '/admin/portfolio/new'
+      preLoaderRoute: typeof AdminPortfolioNewRouteImport
+      parentRoute: typeof AdminPortfolioRoute
+    }
+    '/admin/portfolio/$id': {
+      id: '/admin/portfolio/$id'
+      path: '/$id'
+      fullPath: '/admin/portfolio/$id'
+      preLoaderRoute: typeof AdminPortfolioIdRouteImport
+      parentRoute: typeof AdminPortfolioRoute
+    }
+    '/admin/documents/new': {
+      id: '/admin/documents/new'
+      path: '/new'
+      fullPath: '/admin/documents/new'
+      preLoaderRoute: typeof AdminDocumentsNewRouteImport
+      parentRoute: typeof AdminDocumentsRoute
+    }
+    '/admin/documents/$id': {
+      id: '/admin/documents/$id'
+      path: '/$id'
+      fullPath: '/admin/documents/$id'
+      preLoaderRoute: typeof AdminDocumentsIdRouteImport
+      parentRoute: typeof AdminDocumentsRoute
+    }
   }
 }
+
+interface AdminDocumentsRouteChildren {
+  AdminDocumentsIdRoute: typeof AdminDocumentsIdRoute
+  AdminDocumentsNewRoute: typeof AdminDocumentsNewRoute
+}
+
+const AdminDocumentsRouteChildren: AdminDocumentsRouteChildren = {
+  AdminDocumentsIdRoute: AdminDocumentsIdRoute,
+  AdminDocumentsNewRoute: AdminDocumentsNewRoute,
+}
+
+const AdminDocumentsRouteWithChildren = AdminDocumentsRoute._addFileChildren(
+  AdminDocumentsRouteChildren,
+)
+
+interface AdminPortfolioRouteChildren {
+  AdminPortfolioIdRoute: typeof AdminPortfolioIdRoute
+  AdminPortfolioNewRoute: typeof AdminPortfolioNewRoute
+}
+
+const AdminPortfolioRouteChildren: AdminPortfolioRouteChildren = {
+  AdminPortfolioIdRoute: AdminPortfolioIdRoute,
+  AdminPortfolioNewRoute: AdminPortfolioNewRoute,
+}
+
+const AdminPortfolioRouteWithChildren = AdminPortfolioRoute._addFileChildren(
+  AdminPortfolioRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminDocumentsRoute: typeof AdminDocumentsRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminPortfolioRoute: typeof AdminPortfolioRouteWithChildren
+  AdminProfileRoute: typeof AdminProfileRoute
+  AdminSocialLinksRoute: typeof AdminSocialLinksRoute
+  AdminUsefulLinksRoute: typeof AdminUsefulLinksRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminDocumentsRoute: AdminDocumentsRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminPortfolioRoute: AdminPortfolioRouteWithChildren,
+  AdminProfileRoute: AdminProfileRoute,
+  AdminSocialLinksRoute: AdminSocialLinksRoute,
+  AdminUsefulLinksRoute: AdminUsefulLinksRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AiLlmRouteChildren {
   AiLlmSplatRoute: typeof AiLlmSplatRoute
@@ -228,6 +547,7 @@ const UsefulLinkRouteWithChildren = UsefulLinkRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AiLlmRoute: AiLlmRouteWithChildren,
   PortfolioRoute: PortfolioRouteWithChildren,
   UsefulLinkRoute: UsefulLinkRouteWithChildren,
