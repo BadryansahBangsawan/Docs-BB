@@ -47,6 +47,8 @@ bun run dev
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the fullstack application.
 
+If port 3001 is already in use, stop the other process or set a free port in the web app config before restarting `bun run dev`.
+
 ## UI Customization
 
 React web apps in this stack share shadcn/ui primitives through `packages/ui`.
